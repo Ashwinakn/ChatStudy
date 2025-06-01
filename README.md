@@ -12,7 +12,7 @@ Client-server chat applications are software systems that enable real-time commu
 •	It may handle user authentication, message routing, and other core functionalities.
 •	Client:
 •	Clients are users or devices that connect to the server to participate in the chat.
-•	Each client has a unique identity, often represented by a username.
+**Name:** Mohammed Saajid
 •	Clients interact with the server to send and receive messages.
 ## 2. Communication Protocols:
 •	Communication between clients and servers often relies on established protocols. The choice of protocol influences the behavior of the chat application.
@@ -33,9 +33,9 @@ Client-server chat applications are software systems that enable real-time commu
 •	Socket programming involves functions for creating, binding, listening, accepting connections, and sending/receiving data through sockets.
 ## 4. User Authentication:
 •	For security and privacy, chat applications often implement user authentication mechanisms.
-•	Users are required to provide credentials (e.g., username and password) to access the chat system.
+**Name:** Ashwina K N
 •	More advanced methods like tokens or secure protocols can enhance authentication.
-## 5. Message Routing:
+5. Message Routing:
 •	The server is responsible for routing messages from one client to another.
 •	It ensures that messages are delivered to the intended recipients.
 •	Message routing may involve maintaining a list of connected users and their associated sockets.
@@ -47,7 +47,7 @@ Client-server chat applications typically follow the client-server model, where 
 ## Communication Protocols:
 The choice of communication protocol is crucial. Many chat applications use TCP (Transmission Control Protocol) for reliable, connection-oriented communication to ensure the ordered and error-free exchange of messages.
 User Authentication:
-User authentication mechanisms are essential to ensure secure and authorized access to the chat system. This can involve username-password authentication or more advanced methods like tokens.
+**Name:** Mohammed Saajid
 ## Components of Client-Server Chat Applications:
 ## Server-Side Components:
 
@@ -73,64 +73,70 @@ Client-server chat applications are versatile tools that facilitate real-time co
 
 Client-server chat applications are foundational to real-time communication over networks. They incorporate principles of socket programming, communication protocols, and security mechanisms to provide a seamless user experience. Understanding the basics of client-server chat applications is essential for developers involved in networked application development, as they form the backbone of various collaborative communication systems. As technology evolves, chat applications continue to adapt, incorporating new features and technologies to enhance user interaction and connectivity.
 
-## PROGRAM:
-### client:
-```python
+## Program:
 
-import socket
-
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-client.connect(("localhost", 9999))
-
-done=False
-
-while not done:
-    client.send(input("Message ").encode('utf-8'))
-    msg = client.recv(1024).decode('utf-8')
-
-    if msg == 'quit':
-        done=True
-    else:
-        print(msg)
-
-
-
-client.close()
-
-```
-### server
+### Server:
 ```python
 import socket
-from base64 import decode
-from operator import truediv
 
-server =socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind(('localhost', 9999))
-server.listen()
-client,addr=server.accept()
+def server_program():
+    host = socket.gethostname()  # get the hostname
+    port = 5000  # initiate port no above 1024
 
-done = False
+    server_socket = socket.socket()  # get instance
+    # look closely. The bind() function takes tuple as argument
+    server_socket.bind((host, port))  # bind host address and port together
 
-while not done:
-    msg = client.recv(1024).decode('utf-8')
+    # configure how many client the server can listen simultaneously
+    server_socket.listen(2)
+    conn, address = server_socket.accept()  # accept new connection
+    print("Connection from: " + str(address))
+    while True:
+        # receive data stream. it won't accept data packet greater than 1024 bytes
+        data = conn.recv(1024).decode()
+        if not data:
+            # if data is not received break
+            break
+        print("from connected user: " + str(data))
+        data = input(' -> ')
+        conn.send(data.encode())  # send data to the client
 
-    if msg == 'quit':
-        done = True
-    else:
-        print(msg)
+    conn.close()  # close the connection
 
-    client.send(input("Message ").encode('utf-8'))
-
-
-client.close()
-server.close()
+if __name__ == '__main__':
+    server_program()
 ```
 
-## OUTPUT:
-![image](https://github.com/user-attachments/assets/3387a89a-890f-4322-900f-9aed4ceee866)
+### Client:
+```python
+import socket
+
+def client_program():
+    host = socket.gethostname()  # as both code is running on the same pc
+    port = 5000  # socket server port number
+
+    client_socket = socket.socket()  # instantiate
+    client_socket.connect((host, port))  # connect to the server
+
+    message = input(" -> ")  # take input
+
+    while message.lower().strip() != 'bye':
+        client_socket.send(message.encode())  # send message
+        data = client_socket.recv(1024).decode()  # receive response
+
+        print('Received from server: ' + data)  # show in terminal
+
+        message = input(" -> ")  # again take input
+
+    client_socket.close()  # close the connection
 
 
+if __name__ == '__main__':
+    client_program()
+```
+
+## Output:
+![alt text](image.png)
 
 ## Result:
 
